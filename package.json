@@ -1,0 +1,21 @@
+{
+  "name": "node_demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "mongoose": "^5.0.9",
+    "nodemon": "^1.17.1",
+    "socket.io": "^2.0.4",
+    "to": "^0.2.9",
+    "update": "^0.7.4"
+  }
+}
