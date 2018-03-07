@@ -22,27 +22,30 @@ app.get('/messages',(req,res)=>{
     })
 })
 
-app.post('/messages',(req,res)=>{
-    var message = new Message(req.body)
+app.post('/messages',async (req,res)=>{
 
-    message.save().then(()=>{
-        console.log('saved')
-        return Message.findOne({message:'badword'})
+    try{
+        // throw 'some error'
+        var message = new Message(req.body)
 
-    })
-    .then(censored =>{
-        if(censored){
-            console.log('censored wordk found', censored)
-            Message.remove({_id:censored.id})
-        }
+            var savedMessage = await message.save()
+                console.log('saved')
+            var censored =  await Message.findOne({message:'badword'})
 
-        io.emit('message',req.body)
-        res.sendStatus(200)
-    })
-    .catch((err)=>{
+                if(censored){
+                    await Message.remove({_id:censored.id})
+                }
+                else{
+                    io.emit('message',req.body)
+                }
+                res.sendStatus(200)
+
+    }catch(error){
         res.sendStatus(500)
-        return console.error(err)
-    })
+        return console.error(error)
+    }finally{
+        console.log('message post called')
+    }
 
 })
 
