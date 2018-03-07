@@ -16,11 +16,6 @@ var Message = mongoose.model('Message', {
     message:String
 })
 
-// var messages = [
-//     {name:'mei', message:'ji'},
-//     {name:'yin', message:'jin'},
-// ]
-
 app.get('/messages',(req,res)=>{
     Message.find({},(err,messages)=>{
         res.send(messages)
@@ -30,17 +25,29 @@ app.get('/messages',(req,res)=>{
 app.post('/messages',(req,res)=>{
     var message = new Message(req.body)
 
-    message.save((err)=>{
-        if(err)
-            sendStatus(500)
+    message.save().then(()=>{
+        console.log('saved')
+        return Message.findOne({message:'badword'})
 
-        // messages.push(req.body)
+    })
+    .then(censored =>{
+        if(censored){
+            console.log('censored wordk found', censored)
+            Message.remove({_id:censored.id})
+        }
+
         io.emit('message',req.body)
-        // console.log(req.body)
         res.sendStatus(200)
+    })
+    .catch((err)=>{
+        res.sendStatus(500)
+        return console.error(err)
     })
 
 })
+
+
+
 io.on('connection',(socket)=>{
     console.log('a user connected')
 })
